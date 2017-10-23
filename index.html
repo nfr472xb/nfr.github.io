@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+<script src="https://www.gstatic.com/firebasejs/4.5.1/firebase.js"></script>
+
+  
+  <h1> 簡陋聊天室 </h1>
+  
+  
+<input type="text" id="user" placeholder="輸入內容..">
+<input type="text" id="content" placeholder="輸入內容..">
+<input type="button" id="send" value="送出">
+  <ul id="list"></ul>
+</body>
+</html>
+
+
+
+
+
+<script type="text/javascript">
+   
+  var config = {
+    apiKey: "AIzaSyCGLJ4e88zmxYMN65fxMTUpHsdlnlxWaeE",
+    authDomain: "test-9d224.firebaseapp.com",
+    databaseURL: "https://test-9d224.firebaseio.com",
+    projectId: "test-9d224",
+    storageBucket: "test-9d224.appspot.com",
+    messagingSenderId: "487480572530"
+  };
+  firebase.initializeApp(config);
+  // 初始化 gduser
+ 
+  const content = document.getElementById('content');
+  const user   = document.getElementById('user');
+  const send = document.getElementById('send');
+  const list = document.getElementById('list');
+ var message = firebase.database().ref('message/');
+  
+  send.addEventListener('click',function(e){
+     var NowDate=new Date();
+　var h=NowDate.getHours();
+　var m=NowDate.getMinutes();
+　var s=NowDate.getSeconds();　
+var names = firebase.database().ref('name/'+user.value+'/');
+    
+      
+ if (user.value=="")
+   {
+        message.push({
+      text:content.value,
+       user:"匿名",
+       time:h+':'+m+':'+s+':'
+    } );
+     
+   }
+    
+    else {
+      
+                names.push({
+       text:content.value,
+       time:h+':'+m+':'+s+':'
+    } );
+    
+    
+     message.push({
+      text:content.value,
+       user:user.value,
+       time:h+':'+m+':'+s+':'
+    } );
+      
+    }
+      
+      
+    }
+ 
+    
+    
+    
+ 
+  )
+  
+message.on('value',function(snapshot){
+   list.innerHTML = '';
+    var str = '';
+      snapshot.forEach(function(data){
+        
+        str+='<data-key="'+data.key+'">'+data.val().time
+  
+        str+='<data-key="'+data.key+'"></br>'+data.val().user+':'+data.val().text+'</li></br></br>'
+      })
+    list.innerHTML = str ; 
+});
+list.addEventListener('click',function(e){
+    if(e.target.nodeName =='LI'){
+      let key = e.target.dataset.key;
+      message.child(key).remove();
+    }
+})
+ 
+</script>
+</body>
+
+
+
+
+
+
+
+</html>
